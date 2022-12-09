@@ -10,13 +10,13 @@ class Bateria:
     cargando=False
     carga=0
     tiempo=0
-    notifica=''
+
     def __init__(self):
         self.conectado=False
         self.cargando=False
         self.carga=100
         self.tiempo=0
-        self.notifica=''
+       
     def __notifica():
         return
     def getCarga(self):
@@ -84,7 +84,7 @@ class Concrete_Bateria(Bateria):
             observer.update(self)
 
     def do_smt(self):
-        self.carga-=2
+        self.carga-=1
         self.tiempo+=1
         print("Estoy utilizando el dispositivo...")
         self.notify()
@@ -130,10 +130,7 @@ class ConcreteObserverB(Observer):
         else:
             print("Nivel de batería al %s" % subject.carga)
 
-
-if __name__ == "__main__":
-    # The client code.
-
+def menu():
     subject = Concrete_Bateria()
 
     observer_a = ConcreteObserverA()
@@ -142,9 +139,61 @@ if __name__ == "__main__":
     observer_b = ConcreteObserverB()
     subject.attach(observer_b)
 
+    while True:
+        print()
+        print("1. Comprobar el estado de la batería")
+        print("2. Poner a cargar el telefono")
+        print("3. Quitar de cargar el telefono")
+        print("4. Usar el telefono")
+        print("5. Salir")
+        print()
+        opcion=int(input("Introduce que quieres hacer: "))
+        print()
+        if opcion == 1:
+            subject.notify()
+        elif opcion == 2:
+            if subject.cargando:
+                print("El telefono ya esta cargando...")
+            else:
+                num=int(input("Cuanto tiempo quiere cargar el dispositivo: "))
+                if subject.carga>=100:
+                    print("El telefono ya esta al maximo")
+                    subject.carga-=1
+                    subject.cargar()
+                    
+                else:
+                    for i in range(num):
+                        subject.cargar()
+                        if subject.carga==100:
+                            print("Nivel de batería al máximo.")
+                            break
+        elif opcion == 3:
+            if not subject.cargando:
+                print("El telefono no estaba cargando...")
+            else:
+                subject.desconectar()
+        elif opcion == 4:
+            num=int(input("Cuanto tiempo quieres usar el telefono"))
+            if num>subject.carga:
+                opc=input("El movil se acabara quedando sin bateria. Estas seguro? s/n ")
+                while opc!='n' and opc!='s':
+                    opc=input("El movil se acabara quedando sin bateria. Estas seguro? s/n ")
+                if opc=='s':
+                    for i in range(num):
+                        if subject.carga<=0:
+                            print("Se te ha acabado la bateria, no puedes usar el telefono.")
+                        else:
+                            subject.do_smt()
+            else:
+                for i in range(num):
+                    subject.do_smt()
+        elif opcion==5:
+            break
+    '''
     subject.do_smt()
     subject.cargar()
 
     subject.detach(observer_a)
 
     subject.desconectar()
+    '''
